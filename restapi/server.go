@@ -69,7 +69,7 @@ func NewServer(loopbackOnly bool, scontext *server.Context, config *server.Confi
 	if config.ACMECert {
 		logging.Info("Using Let's Encrypt for certificates")
 		m := &autocert.Manager{
-			Cache:      autocert.DirCache("secret-dir"),
+			Cache:      autocert.DirCache(config.ACMESecretDir),
 			Prompt:     autocert.AcceptTOS,
 			HostPolicy: autocert.HostWhitelist(config.ACMEHost),
 		}
