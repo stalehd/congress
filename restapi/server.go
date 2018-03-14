@@ -64,7 +64,10 @@ func NewServer(loopbackOnly bool, scontext *server.Context, config *server.Confi
 	}
 	ret.mux = http.NewServeMux()
 
-	var tlsConfig *tls.Config
+	ret.srv = &http.Server{
+		Addr:    fmt.Sprintf("%s:%d", host, ret.port),
+		Handler: ret,
+	}
 
 	if config.ACMECert {
 		logging.Info("Using Let's Encrypt for certificates")
@@ -75,13 +78,7 @@ func NewServer(loopbackOnly bool, scontext *server.Context, config *server.Confi
 		}
 
 		go http.ListenAndServe(":http", m.HTTPHandler(nil))
-		tlsConfig = &tls.Config{GetCertificate: m.GetCertificate}
-	}
-
-	ret.srv = &http.Server{
-		Addr:      fmt.Sprintf("%s:%d", host, ret.port),
-		Handler:   ret,
-		TLSConfig: tlsConfig,
+		ret.srv.TLSConfig = &tls.Config{GetCertificate: m.GetCertificate}
 	}
 
 	handler := ret.handler()
