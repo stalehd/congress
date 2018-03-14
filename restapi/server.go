@@ -27,6 +27,7 @@ import (
 	"github.com/ExploratoryEngineering/congress/server"
 	"github.com/ExploratoryEngineering/congress/utils"
 	"github.com/telenordigital/goconnect"
+
 	"golang.org/x/crypto/acme/autocert"
 	"golang.org/x/net/websocket"
 )
@@ -71,12 +72,12 @@ func NewServer(loopbackOnly bool, scontext *server.Context, config *server.Confi
 
 	if config.ACMECert {
 		logging.Info("Using Let's Encrypt for certificates")
+		// See https://godoc.org/golang.org/x/crypto/acme/autocert#example-Manager
 		m := &autocert.Manager{
 			Cache:      autocert.DirCache(config.ACMESecretDir),
 			Prompt:     autocert.AcceptTOS,
 			HostPolicy: autocert.HostWhitelist(config.ACMEHost),
 		}
-
 		go http.ListenAndServe(":http", m.HTTPHandler(nil))
 		ret.srv.TLSConfig = &tls.Config{GetCertificate: m.GetCertificate}
 	}
