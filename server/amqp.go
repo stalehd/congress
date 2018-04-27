@@ -58,7 +58,7 @@ type amqpTransport struct {
 }
 
 func init() {
-	transports["aqmp"] = amqpTransportFromConfig
+	transports["amqp"] = amqpTransportFromConfig
 }
 
 // amqpTransportFromConfig creates a new AMQP transport if the supplied
